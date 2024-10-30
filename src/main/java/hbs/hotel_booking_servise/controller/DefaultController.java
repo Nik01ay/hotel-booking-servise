@@ -1,5 +1,6 @@
 package hbs.hotel_booking_servise.controller;
 
+import hbs.hotel_booking_servise.error.EntityNotFoundEx;
 import hbs.hotel_booking_servise.handler.DefaultHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class DefaultController<RS, RQ> {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RS> update(@PathVariable Long id, @RequestBody RQ request) {
+    public ResponseEntity<RS> update(@PathVariable Long id, @RequestBody RQ request) throws EntityNotFoundEx {
         log.info("update() method is called with id={}", id);
 
         return ResponseEntity.ok(

@@ -1,14 +1,11 @@
 package hbs.hotel_booking_servise.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.*;
 
 public enum UserDto {;
     @Data
     @NoArgsConstructor
-
+    @Builder
     @AllArgsConstructor
     public static class Request {
 

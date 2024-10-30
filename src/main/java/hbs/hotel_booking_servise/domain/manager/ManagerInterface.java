@@ -17,4 +17,6 @@ public interface ManagerInterface <T>{
     public T update(T object);
 
     public void delete(Long id);
+
+    public void deleteAll();
 }

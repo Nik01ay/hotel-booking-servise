@@ -1,13 +1,13 @@
 package hbs.hotel_booking_servise.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.*;
+
+import java.util.List;
 
 public enum HotelDto {;
     @Data
     @NoArgsConstructor
+    @Builder
     @AllArgsConstructor
     public static class Request {
 
@@ -45,7 +45,7 @@ public enum HotelDto {;
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public class ResponseShort {
+    public static class ResponseShort {
 
         private Long id;
 
@@ -58,5 +58,13 @@ public enum HotelDto {;
         private String address;
 
         private Float distance;
+    }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static   class ListResponseCount{
+
+        private List<Response> listResponse;
+        private long count;
     }
 }

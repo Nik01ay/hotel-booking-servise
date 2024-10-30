@@ -1,6 +1,7 @@
 package hbs.hotel_booking_servise.domain.manager;
 
 
+import hbs.hotel_booking_servise.error.EntityNotFoundEx;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public class DefaultManager<T,  R extends JpaRepository<T, Long>> implements Man
         log.debug("findById() method is called with id={}", id);
 
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("В базе данных нет"  + "  с ID " + id));
+                .orElseThrow(() -> new EntityNotFoundEx("нет запрашиваемого объекта с ID " + id));
     }
 
     public T create(T object) {
@@ -53,5 +54,13 @@ public class DefaultManager<T,  R extends JpaRepository<T, Long>> implements Man
         repository.delete(findById(id));
     }
 
+    @Override
+    public void deleteAll() {
+        log.debug("deleteAll method is called");
 
+        repository.deleteAll();
+    }
+    public long count(){
+        return repository.count();
+    }
 }

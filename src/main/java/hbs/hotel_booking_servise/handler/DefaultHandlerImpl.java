@@ -2,7 +2,9 @@ package hbs.hotel_booking_servise.handler;
 
 import hbs.hotel_booking_servise.adapter.DefaultMapper;
 import hbs.hotel_booking_servise.domain.manager.ManagerInterface;
+import hbs.hotel_booking_servise.error.EntityNotFoundEx;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
 
 
@@ -29,7 +31,7 @@ public class DefaultHandlerImpl<E, RS, RQ> implements DefaultHandler<RS, RQ>{
     }
 
     @Override
-    public RS findById(Long id) {
+    public RS findById(Long id) throws EntityNotFoundEx {
         return mapper.entityToResponse(manager.findById(id));
     }
 
@@ -48,5 +50,10 @@ public class DefaultHandlerImpl<E, RS, RQ> implements DefaultHandler<RS, RQ>{
     @Override
     public void delete(Long id) {
         manager.delete(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        manager.deleteAll();
     }
 }

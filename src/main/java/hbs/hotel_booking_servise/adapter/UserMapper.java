@@ -4,6 +4,7 @@ package hbs.hotel_booking_servise.adapter;
 import hbs.hotel_booking_servise.domain.entity.User;
 import hbs.hotel_booking_servise.dto.UserDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +16,12 @@ public interface UserMapper extends DefaultMapper<User, UserDto.Request, UserDto
 
 
 
-  //  @Mapping(source = "id", target = "id")
-/*    @Override
+    @Mapping(source = "id", target = "id")
+   @Override
     User requestToEntity(Long id, UserDto.Request request);
 
 
-//@Override
+/*@Override
     default List<UserDto.Response> entityListToListResponse(List<User> users) {
         return
                 users.stream().map(
