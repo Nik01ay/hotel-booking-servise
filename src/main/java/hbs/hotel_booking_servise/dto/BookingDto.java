@@ -1,23 +1,22 @@
 package hbs.hotel_booking_servise.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public enum BookingDto {;
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
 
         private Long roomId;
 
-        private String checkIn;
+        private Date checkIn;
 
-        private String checkOut;
+        private Date checkOut;
     }
     @Data
     @NoArgsConstructor

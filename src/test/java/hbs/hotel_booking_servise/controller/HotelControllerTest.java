@@ -26,6 +26,15 @@ class HotelControllerTest extends AbstractTest {
                 .build();
         hotelHandler.create(request);
 
+        HotelDto.Request request2 =HotelDto.Request.builder()
+                .name("Hotel2")
+                .city("Gopensk")
+                .address("33adres12345")
+                .distance(2333F)
+                .announce("3announce1")
+                .build();
+        hotelHandler.create(request2);
+
 
 
         hotelHandler.create(HotelDto.Request.builder()
@@ -63,7 +72,7 @@ class HotelControllerTest extends AbstractTest {
     // @WithMockUser(username = "user", roles =  {"USER"})
     public void filterByTest() throws Exception{
         // Создание фильтра
-        String filterParams = "?hotelId=1&city=Gopensk";
+        String filterParams = "?city=Gopensk";
 
         mockMvc.perform(get("/api/v1/hotel/filter" + filterParams)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -71,7 +80,9 @@ class HotelControllerTest extends AbstractTest {
                 .andExpect(jsonPath("$.listResponse[0].id", is(1)))
                 .andExpect(jsonPath("$.listResponse[0].city", is("Gopensk")))
                 .andExpect(jsonPath("$.listResponse[0].address", is("adres12345")))
-                .andExpect(jsonPath("$.count", is(2)))
+                .andExpect(jsonPath("$.listResponse[1].id", is(2)))
+                .andExpect(jsonPath("$.listResponse[1].city", is("Gopensk")))
+                .andExpect(jsonPath("$.count", is(3)))
                 ;
 
     }

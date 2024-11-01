@@ -1,12 +1,12 @@
 package hbs.hotel_booking_servise.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.*;
+
+import java.util.List;
 
 public enum RoomDto {;
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Request {
@@ -41,5 +41,13 @@ public enum RoomDto {;
         private Integer capacity;
 
         private Long hotelId;
+    }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static   class ListResponseCount{
+
+        private List<RoomDto.Response> listResponse;
+        private long count;
     }
 }
