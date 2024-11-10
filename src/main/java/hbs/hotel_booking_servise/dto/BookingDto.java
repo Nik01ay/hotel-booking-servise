@@ -1,9 +1,11 @@
 package hbs.hotel_booking_servise.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
+
+import java.util.List;
 
 public enum BookingDto {;
     @Data
@@ -14,9 +16,10 @@ public enum BookingDto {;
 
         private Long roomId;
 
-        private Date checkIn;
-
-        private Date checkOut;
+        @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
+        private LocalDate checkIn;
+                @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
+        private LocalDate checkOut;
     }
     @Data
     @NoArgsConstructor
@@ -26,9 +29,17 @@ public enum BookingDto {;
         private Long roomId;
 
         private Long userId;
-
+        @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
         private LocalDate checkIn;
-
+       @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
         private LocalDate checkOut;
+    }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static   class ListResponseCount{
+
+        private List<BookingDto.Response> listResponse;
+        private long count;
     }
 }

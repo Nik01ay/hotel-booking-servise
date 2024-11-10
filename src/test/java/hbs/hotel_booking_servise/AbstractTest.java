@@ -1,14 +1,10 @@
 package hbs.hotel_booking_servise;
 
-import hbs.hotel_booking_servise.domain.manager.RoomManager;
-import hbs.hotel_booking_servise.domain.repository.UserRepo;
-import hbs.hotel_booking_servise.dto.UserDto;
-import hbs.hotel_booking_servise.handler.BookingHandler;
-import hbs.hotel_booking_servise.handler.HotelHandler;
-import hbs.hotel_booking_servise.handler.RoomHandler;
-import hbs.hotel_booking_servise.handler.UserHandler;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import hbs.hotel_booking_servise.domain.service.BookingService;
+import hbs.hotel_booking_servise.domain.service.HotelService;
+import hbs.hotel_booking_servise.domain.service.RoomService;
+import hbs.hotel_booking_servise.domain.service.UserService;
+
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,6 +20,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,6 +31,8 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 public class AbstractTest {
     protected  static PostgreSQLContainer postgreSQLContainer;
+
+
 
     static {
         DockerImageName postgres = DockerImageName.parse("postgres:12.3");
@@ -59,18 +60,17 @@ public class AbstractTest {
     protected MockMvc mockMvc;
 
     @Autowired
-    protected UserHandler userHandler;
-
+    protected UserService userService;
 
 
     @Autowired
-    protected HotelHandler hotelHandler;
+    protected HotelService hotelService;
 
     @Autowired
-    protected RoomHandler roomHandler;
+    protected RoomService roomService;
 
     @Autowired
-    protected BookingHandler bookingHandler;
+    protected BookingService bookingService;
 
 
 

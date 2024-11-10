@@ -20,8 +20,9 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("javax.persistence:javax.persistence-api:2.2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-
+	//implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	testImplementation("org.testcontainers:junit-jupiter:1.17.6")
 	testImplementation("org.testcontainers:postgresql:1.17.6")
 

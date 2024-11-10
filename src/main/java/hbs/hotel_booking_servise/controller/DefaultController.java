@@ -1,7 +1,6 @@
 package hbs.hotel_booking_servise.controller;
 
 import hbs.hotel_booking_servise.error.EntityNotFoundEx;
-import hbs.hotel_booking_servise.handler.DefaultHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,7 @@ import java.util.List;
 //@RestController
 //@RequestMapping("/api/v1/{entityName}")
 public class DefaultController<RS, RQ> {
-
+/*
 
     private final DefaultHandler<RS, RQ> handler;
 
@@ -53,4 +52,6 @@ public class DefaultController<RS, RQ> {
         handler.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+ */
 }

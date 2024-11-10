@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Entity(name = "rooms")
 @Data
 @NoArgsConstructor
@@ -28,5 +30,9 @@ public class Room {
     @ManyToOne
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
+
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    private Set<Booking> bookings;
 }
 

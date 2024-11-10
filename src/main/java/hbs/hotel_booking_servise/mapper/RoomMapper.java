@@ -1,4 +1,4 @@
-package hbs.hotel_booking_servise.adapter;
+package hbs.hotel_booking_servise.mapper;
 
 import hbs.hotel_booking_servise.domain.entity.Hotel;
 import hbs.hotel_booking_servise.domain.entity.Room;
@@ -13,20 +13,23 @@ import java.util.List;
 
 @Component
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface RoomMapper extends DefaultMapper<Room, RoomDto.Request, RoomDto.Response> {
+public interface RoomMapper  {
 
-    @Override
-   @Mapping(source = "id", target = "id")
-    @Mapping(source = "request.hotelId", target = "hotel.id")
-    Room requestToEntity(Long id, RoomDto.Request request);
 
-    @Override
-   @Mapping(source = "request.hotelId", target = "hotel.id")
+
+ //  @Mapping(source = "id", target = "id")
+   // @Mapping(source = "request.hotelId", target = "hotel.id")
+   // Room requestToEntity( RoomDto.Request request);
+
+
+  @Mapping(source = "hotelId", target = "hotel.id")
     Room requestToEntity(RoomDto.Request request);
 
-    @Override
-   @Mapping(source = "hotel.id", target = "hotelId")
+
+ @Mapping(source = "hotel.id", target = "hotelId")
     RoomDto.Response entityToResponse(Room room);
+
+    List<RoomDto.Response> entityListToListResponse(List<Room> entitys);
 
 
     default RoomDto.ListResponseCount entityListToListResponseCount(List<Room> entityList, long count) {

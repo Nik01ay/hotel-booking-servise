@@ -1,9 +1,7 @@
-package hbs.hotel_booking_servise.domain.manager;
+package hbs.hotel_booking_servise.domain.service;
 
 
 import hbs.hotel_booking_servise.error.EntityNotFoundEx;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
 

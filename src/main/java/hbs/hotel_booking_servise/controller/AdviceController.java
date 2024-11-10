@@ -29,7 +29,7 @@ public class AdviceController {
         log.debug("handles exception with incorrectRequest() method");
 
         return ResponseEntity
-                .status(400)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorRs(ex.getLocalizedMessage()));
     }
 

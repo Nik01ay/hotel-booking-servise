@@ -9,11 +9,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.web.servlet.MockMvc;
-
 class UserControllerTest extends AbstractTest {
     @BeforeEach
     public void setup (){
@@ -23,11 +18,11 @@ class UserControllerTest extends AbstractTest {
                 .email("email1@sda.ru")
                 .password("12345")
                 .build();
-        userHandler.create(request);
+        userService.create(request);
         System.out.println("User1 CREATED");
         System.out.println(request);
 
-        userHandler.create(UserDto.Request.builder()
+        userService.create(UserDto.Request.builder()
                 .name("User2")
                 .email("email2@sda.ru")
                 .password("12345")
@@ -37,7 +32,7 @@ class UserControllerTest extends AbstractTest {
     }
     @AfterEach
     public void afterEach(){
-        userHandler.deleteAll();
+        userService.deleteAll();
     }
 
     @Test

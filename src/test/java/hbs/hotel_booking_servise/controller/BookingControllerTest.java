@@ -1,39 +1,50 @@
 package hbs.hotel_booking_servise.controller;
 
+
 import hbs.hotel_booking_servise.AbstractTest;
 import hbs.hotel_booking_servise.dto.BookingDto;
 import hbs.hotel_booking_servise.dto.HotelDto;
 import hbs.hotel_booking_servise.dto.RoomDto;
 
-import hbs.hotel_booking_servise.specification.RoomFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.SerializationFeature;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.testcontainers.shaded.com.fasterxml.jackson.databind.SerializationFeature.*;
 
-class RoomControllerTest extends AbstractTest {
+
+class BookingControllerTest extends AbstractTest {
+
+
     private LocalDate date1;
     private LocalDate date5;
     private LocalDate date10;
     private LocalDate date15;
+
     @BeforeEach
     public void setup() {
+
 
         date1 = LocalDate.of(2023, 1, 1);
         date5 = LocalDate.of(2023, 1, 5);
@@ -97,8 +108,7 @@ class RoomControllerTest extends AbstractTest {
                 .number("1-99")
                 .build()
         );
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                .withZone(ZoneId.systemDefault());
+
 
         bookingService.create(BookingDto.Request.builder()
                 .roomId(1L)
@@ -114,8 +124,6 @@ class RoomControllerTest extends AbstractTest {
                 .build());
 
 
-
-
     }
 
     @AfterEach
@@ -126,67 +134,65 @@ class RoomControllerTest extends AbstractTest {
     }
 
     @Test
-    // @WithMockUser(username = "user", roles =  {"USER"})
-    public void getAllTest() throws Exception {
-        System.out.println("Start Get All test");
-        mockMvc.perform(get("/api/v1/room")).andExpect(
-                        status().isOk())
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$.count", is(4))) // Проверяем, что размер массива равен4
-                .andExpect(jsonPath("$.listResponse[0].id", is(1)))
-                .andExpect(jsonPath("$.listResponse[0].hotelId", is(1)))// Проверяем параметры первого объекта
+    void getAll() {
+    }
 
-        ;
+
+    @Test
+    void createFreeRoomBookingTest() throws Exception {
+        System.out.println(" - createFreeRoomBookingTest - ");
+
+        BookingDto.Request bookingRequest = BookingDto.Request.builder()
+                .roomId(4L)
+                .checkIn(date1)
+                .checkOut(date5)
+                .build();
+        //ObjectMapper objectMapper = new ObjectMapper();
+
+        //objectMapper.registerModule( new ParameterNamesModule());
+        // todo не могу внедрить JavaTimeModule
+        //objectMapper.disable(WRITE_DATES_AS_TIMESTAMPS);
+
+
+        // objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+
+
+        String content = "{\"roomId\":" + bookingRequest.getRoomId()
+                + ",\"checkIn\":\"" + bookingRequest.getCheckIn()
+                + "\",\"checkOut\":\"" + bookingRequest.getCheckOut() + "\"}"; //objectMapper.writeValueAsString(bookingRequest);
+        System.out.println("request - " + bookingRequest);
+        System.out.println("mapping bookingRequest.toString();" + content);
+
+        mockMvc.perform(post("/api/v1/booking")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.roomId", is(4)))
+                .andExpect(jsonPath("$.checkIn", is("2023-01-01")))
+                .andExpect(jsonPath("$.checkOut", is("2023-01-05")));
+
 
     }
 
     @Test
-    // @WithMockUser(username = "user", roles =  {"USER"})
-    public void filterByTest() throws Exception {
-        // Создание фильтра
-        String filterParams = "?hotelId=1&name=BigRoom";
-        //String filterParams = "?capacity=3";
+    void createUsedRoomBookingTest() throws Exception {
+        System.out.println(" - createFreeRoomBookingTest - ");
+        BookingDto.Request bookingRequest = BookingDto.Request.builder()
+                .roomId(1L)
+                .checkIn(date1)
+                .checkOut(date10)
+                .build();
 
-        mockMvc.perform(get("/api/v1/room/filter" + filterParams)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+        String content = "{\"roomId\":" + bookingRequest.getRoomId()
+                + ",\"checkIn\":\"" + bookingRequest.getCheckIn()
+                + "\",\"checkOut\":\"" + bookingRequest.getCheckOut() + "\"}";
+        System.out.println("bookingRequest.toString();" + content);
 
-                .andExpect(jsonPath("$.listResponse[0].id", is(1)))
-                .andExpect(jsonPath("$.listResponse[0].hotelId", is(1)))
-                .andExpect(jsonPath("$.listResponse", hasSize(1)))
-                .andExpect(jsonPath("$.count", is(4)))
-        ;
-
-    }
-
-    @Test
-    // @WithMockUser(username = "user", roles =  {"USER"})
-    public void filterByDateTest() throws Exception {
-
-
-
-        RoomFilter filter = new RoomFilter();
-        filter.setDateStartRange(date1);
-        filter.setDateEndRange(date5);
-
-        String filterParams = "?dateStartRange=" +filter.getDateStartRange() + "&dateEndRange=" + filter.getDateEndRange();
-
-
-        System.out.println("filterParams-" + filterParams);
-
-        bookingService.findAll().getListResponse().forEach(System.out::println);
-        mockMvc.perform(get("/api/v1/room/filter" + filterParams)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-
-                .andExpect(jsonPath("$.listResponse[0].id", is(1)))
-                .andExpect(jsonPath("$.listResponse[0].hotelId", is(1)))
-                .andExpect(jsonPath("$.listResponse", hasSize(3)))
-                .andExpect(jsonPath("$.count", is(4)))
-        ;
-
-
-
+        mockMvc.perform(post("/api/v1/booking")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Room is used")));
 
 
     }

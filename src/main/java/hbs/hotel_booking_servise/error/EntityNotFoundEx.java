@@ -5,4 +5,6 @@ public class EntityNotFoundEx extends RuntimeException{
     public EntityNotFoundEx(String message) {
         super(message);
     }
+
+
 }

@@ -1,7 +1,4 @@
-package hbs.hotel_booking_servise.domain.manager;
-
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.data.jpa.repository.JpaRepository;
+package hbs.hotel_booking_servise.domain.service;
 
 import java.util.List;
 

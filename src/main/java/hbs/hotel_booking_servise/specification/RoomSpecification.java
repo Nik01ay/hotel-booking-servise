@@ -2,14 +2,26 @@ package hbs.hotel_booking_servise.specification;
 
 import hbs.hotel_booking_servise.domain.entity.Booking;
 import hbs.hotel_booking_servise.domain.entity.Room;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
+
+import jakarta.persistence.Persistence;
+import jakarta.persistence.criteria.*;
+import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.Date;
+import javax.persistence.EntityManager;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import javax.management.Attribute;
+import javax.persistence.metamodel.ManagedType;
+import java.time.*;
+import java.util.List;
+import java.util.Set;
 
 public interface RoomSpecification {
+
 
     static Specification<Room> withFilter(RoomFilter filter) {
         return Specification
@@ -19,39 +31,43 @@ public interface RoomSpecification {
                 .and(byMaxCost(filter.getMaxCost()))
                 .and(byCapacity(filter.getCapacity()))
                 .and(byHotelId(filter.getHotelId()))
-                 .and(hasFreeRoomsWithDatesRange(filter.getDateStartRange(), filter.getDateEndRange()))
+                .and(hasFreeRoomsWithDatesRange(filter.getDateStartRange(), filter.getDateEndRange()))
+
                 ;
     }
 
-    static Specification<Room> hasFreeRoomsWithDatesRange(Date dateStartRange, Date dateEndRange) {
+    static Specification<Room> hasFreeRoomsWithDatesRange(LocalDate dateStartRange, LocalDate dateEndRange) {
 
-            return (root, query, criteriaBuilder) -> {
+        return (root, query, criteriaBuilder) -> {
+            Predicate roomIsFree = criteriaBuilder.conjunction();
+            if (dateStartRange != null && dateEndRange != null) {
+                System.out.println("PROVERKA");
+                Join<Room, Booking> roomBooking = root.join("bookings", JoinType.LEFT);
 
+                Predicate checkOutBeforeStart = criteriaBuilder.lessThanOrEqualTo(roomBooking.get("checkOut"), dateStartRange);
+                Predicate checkInAfterEnd = criteriaBuilder.greaterThanOrEqualTo(roomBooking.get("checkIn"), dateEndRange);
+                // todo разобраться с логикой
 
-                Predicate roomIsFree = criteriaBuilder.conjunction(); // Инициализируем пустое условие
+                Predicate hasNoBookings = criteriaBuilder.isNull(roomBooking.get("id"));
 
-                // Проверяем наличие диапазона дат
-                if (dateStartRange != null && dateEndRange != null) {
+                roomIsFree = criteriaBuilder
+                        .or(
+                                hasNoBookings
+                                ,
+                                criteriaBuilder
+                                        .or(checkOutBeforeStart, checkInAfterEnd));
 
-                    Join<Booking, Room> roomBookings = root.join("room", JoinType.RIGHT);
-
-                    // Условия для проверки свободных комнат
-                    Predicate checkOutBeforeStart = criteriaBuilder.lessThan(roomBookings.get("checkOut"), dateStartRange);
-                    Predicate checkInAfterEnd = criteriaBuilder.greaterThan(roomBookings.get("checkIn"), dateEndRange);
-
-                    // Условие для проверки наличия бронирований
-                    Predicate hasNoBookings = criteriaBuilder.isNull(roomBookings.get("id"));
-
-                    // Объединяем условия: комната свободна, если нет бронирований или она свободна в заданном диапазоне
-                    roomIsFree = criteriaBuilder.or(hasNoBookings,
-                            criteriaBuilder.and(checkOutBeforeStart, checkInAfterEnd));
-                }
-                return roomIsFree;
-            };
+            }
+            return roomIsFree;
+        }
+                ;
 
     }
 
-    static Specification<Room> byRoomId(Long roomId) {
+
+
+
+        static Specification<Room> byRoomId(Long roomId) {
         return ((root, query, cb) -> {
             if (roomId == null) {
                 return null;
@@ -97,8 +113,8 @@ public interface RoomSpecification {
             if (capacity == null) {
                 return null;
             }
-
-            return cb.equal(root.get("capacity"), capacity);
+            // номера с вместимостью больше чем в фильтре
+            return cb.greaterThan(root.get("capacity"), capacity);
         });
     }
 
