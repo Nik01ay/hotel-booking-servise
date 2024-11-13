@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 
@@ -98,6 +99,42 @@ public class HotelService {
     }
 
 
+    public HotelDto.Response updateRating(Long id, HotelDto.RatingRequest request) throws EntityNotFoundEx {
 
+        Hotel hotel = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundEx("нет запрашиваемого объекта с ID " + id));
+
+        HotelDto.Response h = calculateRating(hotel, request.getNewRating());
+        hotel.setVotes(h.getVotes());
+        hotel.setRating(h.getRating());
+        repository.save(hotel);
+        return findById(id);
+    }
+
+    private HotelDto.Response calculateRating(Hotel hotel, Float newRatign) {
+
+        Float rating = hotel.getRating();
+        Integer votes = hotel.getVotes();
+
+        if (rating != null && votes != null) {
+            float totalRating = rating * votes;
+            totalRating = totalRating - rating + newRatign;
+            rating = totalRating / votes;
+            rating = (float) Math.round(rating * 10);
+            rating /= 10;
+            votes++;
+
+        } else {
+            rating = newRatign;
+            rating = (float) (Math.round(rating * 10) / 10);
+            votes = 1;
+
+        }
+
+        HotelDto.Response h = new HotelDto.Response();
+        h.setVotes(votes);
+        h.setRating(rating);
+        return h;
+    }
 
 }

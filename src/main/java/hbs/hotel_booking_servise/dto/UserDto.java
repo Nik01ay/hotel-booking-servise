@@ -1,5 +1,6 @@
 package hbs.hotel_booking_servise.dto;
 
+import hbs.hotel_booking_servise.domain.entity.UserRole;
 import lombok.*;
 
 public enum UserDto {;
@@ -14,6 +15,7 @@ public enum UserDto {;
         private String password;
 
         private String email;
+        private String role;
 
     }
     @Data

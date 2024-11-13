@@ -15,6 +15,7 @@ public enum BookingDto {;
     public static class Request {
 
         private Long roomId;
+        private Long userId;
 
         @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
         private LocalDate checkIn;

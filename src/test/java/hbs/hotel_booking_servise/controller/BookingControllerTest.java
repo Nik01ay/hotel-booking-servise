@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import org.springframework.security.test.context.support.WithMockUser;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.text.SimpleDateFormat;
@@ -139,6 +140,7 @@ class BookingControllerTest extends AbstractTest {
 
 
     @Test
+    @WithMockUser(username = "user", authorities =  {"USER"})
     void createFreeRoomBookingTest() throws Exception {
         System.out.println(" - createFreeRoomBookingTest - ");
 
@@ -159,7 +161,7 @@ class BookingControllerTest extends AbstractTest {
 
         String content = "{\"roomId\":" + bookingRequest.getRoomId()
                 + ",\"checkIn\":\"" + bookingRequest.getCheckIn()
-                + "\",\"checkOut\":\"" + bookingRequest.getCheckOut() + "\"}"; //objectMapper.writeValueAsString(bookingRequest);
+                + "\",\"checkOut\":\"" + bookingRequest.getCheckOut() + "\"}";
         System.out.println("request - " + bookingRequest);
         System.out.println("mapping bookingRequest.toString();" + content);
 
@@ -175,6 +177,7 @@ class BookingControllerTest extends AbstractTest {
     }
 
     @Test
+    @WithMockUser(username = "user", authorities =  {"USER"})
     void createUsedRoomBookingTest() throws Exception {
         System.out.println(" - createFreeRoomBookingTest - ");
         BookingDto.Request bookingRequest = BookingDto.Request.builder()

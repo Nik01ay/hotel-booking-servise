@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity(name = "users")
 @Data
 @NoArgsConstructor
@@ -22,7 +24,9 @@ public class User {
     private String password;
 
     private String email;
-
+    @Enumerated(EnumType.STRING)
     private UserRole role;
+
+
 
 }

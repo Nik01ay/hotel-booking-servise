@@ -13,3 +13,19 @@ spring:
       schema: booking_schema
       connection-init-sql: CREATE SCHEMA IF NOT EXISTS booking_schema
       connection-timeout: 10000
+
+
+  data:
+    mongodb:
+      uri: mongodb://root:root@localhost:27017/infodatabase?authSource=admin
+
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+app:
+  kafka:
+    kafkaBookingMessageTopic: "booking-topic"
+    kafkaUserMessageTopic: "user-topic"
+    kafkaMessageGroupId: "kafka-message-group-id"
+    kafkaListenerAutoStartup: "true"

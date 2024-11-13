@@ -2,14 +2,19 @@ package hbs.hotel_booking_servise.domain.service;
 
 import hbs.hotel_booking_servise.domain.entity.User;
 
+import hbs.hotel_booking_servise.domain.entity.UserRole;
 import hbs.hotel_booking_servise.dto.UserDto;
 import hbs.hotel_booking_servise.error.EntityNotFoundEx;
+import hbs.hotel_booking_servise.error.IncorrectRequestEx;
 import hbs.hotel_booking_servise.mapper.UserMapper;
+import hbs.hotel_booking_servise.statistics.KafkaProducer;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import hbs.hotel_booking_servise.domain.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +24,7 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor
+
 public class UserService {
 
     @Autowired
@@ -26,6 +32,11 @@ public class UserService {
 
     @Autowired
     private final UserMapper mapper;
+
+    @Autowired
+    private final KafkaProducer kafkaProducer;
+@Autowired
+    private final PasswordEncoder passwordEncoder;
 
     public List<UserDto.Response> findAll() {
         log.debug("findAll() method is called " + repository.getClass() + "имя класса");
@@ -43,7 +54,28 @@ public class UserService {
 
     public UserDto.Response create(UserDto.Request request) {
         log.debug("create() method is called");
-        return mapper.entityToResponse(repository.save(mapper.requestToEntity(request)));
+
+
+        boolean slotFree = repository.findByEmail(request.getEmail()).isEmpty() &&
+                repository.findByName(request.getName()).isEmpty();
+
+        if (slotFree) {
+            User user= mapper.requestToEntity(request);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+          if (request.getRole() == null || request.getRole().isEmpty()) {
+              user.setRole(UserRole.USER);
+          }
+            UserDto.Response userResponse = mapper.entityToResponse
+                    (repository.save
+                            (user));
+
+
+            kafkaProducer.sendToKafkaUserEvent(userResponse.getId());
+            return userResponse;
+        } else throw new IncorrectRequestEx("Name or email new user used");
+
+
     }
 
     public UserDto.Response update(Long id, UserDto.Request object) {
@@ -82,6 +114,10 @@ public class UserService {
 
     public long count() {
         return repository.count();
+    }
+
+    public User findByName(String name) throws EntityNotFoundEx {
+        return repository.findByName(name).orElseThrow(() -> new EntityNotFoundEx("USER NOT FOUD"));
     }
 
 

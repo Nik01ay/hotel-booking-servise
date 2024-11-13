@@ -10,6 +10,7 @@ import hbs.hotel_booking_servise.error.IncorrectRequestEx;
 import hbs.hotel_booking_servise.mapper.BookingMapper;
 import hbs.hotel_booking_servise.specification.HotelFilter;
 import hbs.hotel_booking_servise.specification.HotelSpecification;
+import hbs.hotel_booking_servise.statistics.KafkaProducer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class BookingService {
     @Autowired
     private final BookingMapper mapper;
 
+    @Autowired
+    private final KafkaProducer kafkaProducer;
 
   /*  public BookingDto.ListResponseCount filterBy(HotelFilter filter) {
         log.debug("filterBy() method is called");
@@ -65,9 +68,15 @@ public class BookingService {
         if
         (useBooking.stream().noneMatch(booking ->
                 request.getCheckIn().isBefore(booking.getCheckOut()) &&
-                        request.getCheckOut().isAfter(booking.getCheckIn())))
-        {
-            return mapper.entityToResponse(repository.save(mapper.requestToEntity(request)));
+                        request.getCheckOut().isAfter(booking.getCheckIn()))) {
+
+            BookingDto.Response booking = mapper.entityToResponse
+                    (repository.save
+                            (mapper.requestToEntity(request)));
+
+            kafkaProducer.sendToKafkaBookingEvent(booking);
+            return booking;
+
         } else {
             throw new IncorrectRequestEx("Room is used");
         }

@@ -5,6 +5,7 @@ import hbs.hotel_booking_servise.domain.service.UserService;
 import hbs.hotel_booking_servise.dto.HotelDto;
 
 import hbs.hotel_booking_servise.specification.HotelFilter;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +58,13 @@ public class HotelController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         service.delete(id);
+    }
+
+
+    @PutMapping("/{id}/rating/")
+    public HotelDto.Response updateRating(@PathVariable Long id,
+                                       @RequestBody @Valid HotelDto.RatingRequest request) {
+        return service.updateRating(id, request);
     }
 }
 

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -126,7 +127,7 @@ class RoomControllerTest extends AbstractTest {
     }
 
     @Test
-    // @WithMockUser(username = "user", roles =  {"USER"})
+     @WithMockUser(username = "user", authorities =  {"USER"})
     public void getAllTest() throws Exception {
         System.out.println("Start Get All test");
         mockMvc.perform(get("/api/v1/room")).andExpect(
@@ -141,7 +142,7 @@ class RoomControllerTest extends AbstractTest {
     }
 
     @Test
-    // @WithMockUser(username = "user", roles =  {"USER"})
+     @WithMockUser(username = "user", authorities =  {"USER"})
     public void filterByTest() throws Exception {
         // Создание фильтра
         String filterParams = "?hotelId=1&name=BigRoom";
@@ -160,7 +161,7 @@ class RoomControllerTest extends AbstractTest {
     }
 
     @Test
-    // @WithMockUser(username = "user", roles =  {"USER"})
+    @WithMockUser(username = "user", authorities =  {"USER"})
     public void filterByDateTest() throws Exception {
 
 

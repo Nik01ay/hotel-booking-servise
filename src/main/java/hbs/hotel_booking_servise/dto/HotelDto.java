@@ -2,6 +2,10 @@ package hbs.hotel_booking_servise.dto;
 
 import lombok.*;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 
 public enum HotelDto {;
@@ -67,4 +71,17 @@ public enum HotelDto {;
         private List<Response> listResponse;
         private long count;
     }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public class RatingRequest {
+
+        @NotNull(message = "Рейтинг должен быть указан!")
+        @Min(value = 1, message = "Рейтинг не может быть меньше {value}!")
+        @Max(value = 5, message = "Рейтинг не может быть больше {value}!")
+        private Float newRating;
+
+    }
+
 }

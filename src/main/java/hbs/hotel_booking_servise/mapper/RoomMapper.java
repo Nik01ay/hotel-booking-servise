@@ -17,16 +17,12 @@ public interface RoomMapper  {
 
 
 
- //  @Mapping(source = "id", target = "id")
-   // @Mapping(source = "request.hotelId", target = "hotel.id")
-   // Room requestToEntity( RoomDto.Request request);
-
 
   @Mapping(source = "hotelId", target = "hotel.id")
     Room requestToEntity(RoomDto.Request request);
 
 
- @Mapping(source = "hotel.id", target = "hotelId")
+@Mapping(source = "hotel.id", target = "hotelId")
     RoomDto.Response entityToResponse(Room room);
 
     List<RoomDto.Response> entityListToListResponse(List<Room> entitys);

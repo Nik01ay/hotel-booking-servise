@@ -17,16 +17,15 @@ import java.util.List;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BookingMapper {
 
-    @Mapping(source = "roomId", target = "room.id")
+   @Mapping(source = "roomId", target = "room.id")
     Booking requestToEntity(BookingDto.Request request);
 
 
-    @Mapping(source = "room.id", target = "roomId")
+   @Mapping(source = "room.id", target = "roomId")
     BookingDto.Response entityToResponse(Booking entity);
 
     List<BookingDto.Response> entityListToListResponse(List<Booking> entitys);
 
-    //@Override
     default BookingDto.ListResponseCount entityListToListResponseCount(List<Booking> entitys, Long count) {
         return new BookingDto.ListResponseCount (entityListToListResponse(entitys), count);
 
