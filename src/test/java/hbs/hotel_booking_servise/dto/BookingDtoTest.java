@@ -24,14 +24,14 @@ class BookingDtoTest {
         LocalDate date10 = LocalDate.of(2023, 1, 10);
         LocalDate date15 = LocalDate.of(2023, 1, 15);
 
-        BookingDto.Request request1 = BookingDto.Request.builder()
+        BookingDtoRequest request1 = BookingDtoRequest.builder()
                 .roomId(1L)
                 .checkIn(date5)
                 .checkOut(date15)
                 .build();
 
 
-        BookingDto.Request request2 = (BookingDto.Request.builder()
+        BookingDtoRequest request2 = (BookingDtoRequest.builder()
                 .roomId(2L)
                 .checkIn(date1)
                 .checkOut(date10)
@@ -48,7 +48,7 @@ class BookingDtoTest {
         System.out.println("entity is - ");
         System.out.println(entity1);
 
-        BookingDto.Response response1 = mapper.entityToResponse(entity1);
+        BookingDtoResponse response1 = mapper.entityToResponse(entity1);
         System.out.println("response is - ");
         System.out.println(response1);
     }

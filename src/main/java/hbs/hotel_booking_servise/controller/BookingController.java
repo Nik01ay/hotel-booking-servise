@@ -1,13 +1,12 @@
 package hbs.hotel_booking_servise.controller;
 
 import hbs.hotel_booking_servise.domain.service.BookingService;
-import hbs.hotel_booking_servise.domain.service.HotelService;
-import hbs.hotel_booking_servise.dto.BookingDto;
+import hbs.hotel_booking_servise.dto.BookingDtoListResponseCount;
+import hbs.hotel_booking_servise.dto.BookingDtoRequest;
+import hbs.hotel_booking_servise.dto.BookingDtoResponse;
 
-import hbs.hotel_booking_servise.dto.HotelDto;
-import hbs.hotel_booking_servise.specification.HotelFilter;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,23 +24,23 @@ public class BookingController {
 
 
     @GetMapping
-    public BookingDto.ListResponseCount getAll() {
+    public BookingDtoListResponseCount getAll() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public BookingDto.Response findById(@PathVariable Long id) {
+    public BookingDtoResponse findById(@PathVariable Long id) {
         return service.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookingDto.Response create(@RequestBody BookingDto.Request request) {
+    public BookingDtoResponse create(@RequestBody BookingDtoRequest request) {
         return service.create(request);
     }
 
     @PutMapping("/{id}")
-    public BookingDto.Response update(@PathVariable Long id, @RequestBody BookingDto.Request request) {
+    public BookingDtoResponse update(@PathVariable Long id, @RequestBody BookingDtoRequest request) {
         return service.update(id, request);
     }
 

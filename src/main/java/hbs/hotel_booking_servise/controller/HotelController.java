@@ -1,20 +1,22 @@
 package hbs.hotel_booking_servise.controller;
 
 import hbs.hotel_booking_servise.domain.service.HotelService;
-import hbs.hotel_booking_servise.domain.service.UserService;
-import hbs.hotel_booking_servise.dto.HotelDto;
 
+
+import hbs.hotel_booking_servise.dto.HotelDtoListResponseCount;
+import hbs.hotel_booking_servise.dto.HotelDtoRatingRequest;
+import hbs.hotel_booking_servise.dto.HotelDtoRequest;
+import hbs.hotel_booking_servise.dto.HotelDtoResponse;
 import hbs.hotel_booking_servise.specification.HotelFilter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/hotel")
@@ -26,7 +28,7 @@ public class HotelController {
     private HotelService service;
 
     @GetMapping("/filter")
-    public HotelDto.ListResponseCount filterBy(HotelFilter filter) {
+    public HotelDtoListResponseCount filterBy(HotelFilter filter) {
         log.info("HotelController: filterBy() method is called");
         return service.filterBy(filter)
                 ;
@@ -34,23 +36,23 @@ public class HotelController {
 
 
     @GetMapping
-    public HotelDto.ListResponseCount getAll() {
+    public HotelDtoListResponseCount getAll() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public HotelDto.Response findById(@PathVariable Long id) {
+    public HotelDtoResponse findById(@PathVariable Long id) {
         return service.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public HotelDto.Response create(@RequestBody HotelDto.Request request) {
+    public HotelDtoResponse create(@RequestBody HotelDtoRequest request) {
         return service.create(request);
     }
 
     @PutMapping("/{id}")
-    public HotelDto.Response update(@PathVariable Long id, @RequestBody HotelDto.Request request) {
+    public HotelDtoResponse update(@PathVariable Long id, @RequestBody HotelDtoRequest request) {
         return service.update(id, request);
     }
 
@@ -62,8 +64,8 @@ public class HotelController {
 
 
     @PutMapping("/{id}/rating/")
-    public HotelDto.Response updateRating(@PathVariable Long id,
-                                       @RequestBody @Valid HotelDto.RatingRequest request) {
+    public HotelDtoResponse updateRating(@PathVariable Long id,
+                                         @RequestBody @Valid HotelDtoRatingRequest request) {
         return service.updateRating(id, request);
     }
 }

@@ -1,20 +1,22 @@
 package hbs.hotel_booking_servise.domain.service;
 
 import hbs.hotel_booking_servise.domain.entity.Booking;
-import hbs.hotel_booking_servise.domain.entity.Hotel;
+
 import hbs.hotel_booking_servise.domain.repository.BookingRepo;
-import hbs.hotel_booking_servise.dto.BookingDto;
-import hbs.hotel_booking_servise.dto.HotelDto;
+
+import hbs.hotel_booking_servise.dto.BookingDtoListResponseCount;
+import hbs.hotel_booking_servise.dto.BookingDtoRequest;
+import hbs.hotel_booking_servise.dto.BookingDtoResponse;
+
 import hbs.hotel_booking_servise.error.EntityNotFoundEx;
 import hbs.hotel_booking_servise.error.IncorrectRequestEx;
 import hbs.hotel_booking_servise.mapper.BookingMapper;
-import hbs.hotel_booking_servise.specification.HotelFilter;
-import hbs.hotel_booking_servise.specification.HotelSpecification;
+
 import hbs.hotel_booking_servise.statistics.KafkaProducer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,13 +25,12 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class BookingService {
-    @Autowired
+
     private final BookingRepo repository;
 
-    @Autowired
+
     private final BookingMapper mapper;
 
-    @Autowired
     private final KafkaProducer kafkaProducer;
 
   /*  public BookingDto.ListResponseCount filterBy(HotelFilter filter) {
@@ -43,21 +44,21 @@ public class BookingService {
     }
 */
 
-    public BookingDto.ListResponseCount findAll() {
+    public BookingDtoListResponseCount findAll() {
         log.debug("findAll() method is called " + this.getClass() + "имя класса");
 
         return mapper.entityListToListResponseCount(repository.findAll(), repository.count());
     }
 
 
-    public BookingDto.Response findById(Long id) {
+    public BookingDtoResponse findById(Long id) {
         log.debug("findById() method is called with id={}", id);
 
         return mapper.entityToResponse(repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundEx("нет запрашиваемого объекта с ID " + id)));
     }
 
-    public BookingDto.Response create(BookingDto.Request request) throws IncorrectRequestEx {
+    public BookingDtoResponse create(BookingDtoRequest request) throws IncorrectRequestEx {
         log.debug("create() method is called");
         System.out.println(request);
         System.out.println(mapper.requestToEntity(request));
@@ -70,7 +71,7 @@ public class BookingService {
                 request.getCheckIn().isBefore(booking.getCheckOut()) &&
                         request.getCheckOut().isAfter(booking.getCheckIn()))) {
 
-            BookingDto.Response booking = mapper.entityToResponse
+            BookingDtoResponse booking = mapper.entityToResponse
                     (repository.save
                             (mapper.requestToEntity(request)));
 
@@ -82,7 +83,7 @@ public class BookingService {
         }
     }
 
-    public BookingDto.Response update(Long id, BookingDto.Request object) {
+    public BookingDtoResponse update(Long id, BookingDtoRequest object) {
         log.debug("update() method is called");
 
 

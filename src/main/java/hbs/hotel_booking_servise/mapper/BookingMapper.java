@@ -2,10 +2,12 @@ package hbs.hotel_booking_servise.mapper;
 
 
 import hbs.hotel_booking_servise.domain.entity.Booking;
-import hbs.hotel_booking_servise.domain.entity.Hotel;
-import hbs.hotel_booking_servise.dto.BookingDto;
 
-import hbs.hotel_booking_servise.dto.HotelDto;
+
+import hbs.hotel_booking_servise.dto.BookingDtoListResponseCount;
+import hbs.hotel_booking_servise.dto.BookingDtoRequest;
+import hbs.hotel_booking_servise.dto.BookingDtoResponse;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -18,16 +20,16 @@ import java.util.List;
 public interface BookingMapper {
 
    @Mapping(source = "roomId", target = "room.id")
-    Booking requestToEntity(BookingDto.Request request);
+    Booking requestToEntity(BookingDtoRequest request);
 
 
    @Mapping(source = "room.id", target = "roomId")
-    BookingDto.Response entityToResponse(Booking entity);
+   BookingDtoResponse entityToResponse(Booking entity);
 
-    List<BookingDto.Response> entityListToListResponse(List<Booking> entitys);
+    List<BookingDtoResponse> entityListToListResponse(List<Booking> entitys);
 
-    default BookingDto.ListResponseCount entityListToListResponseCount(List<Booking> entitys, Long count) {
-        return new BookingDto.ListResponseCount (entityListToListResponse(entitys), count);
+    default BookingDtoListResponseCount entityListToListResponseCount(List<Booking> entitys, Long count) {
+        return new BookingDtoListResponseCount (entityListToListResponse(entitys), count);
 
     }
 

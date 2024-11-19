@@ -1,10 +1,11 @@
 package hbs.hotel_booking_servise.controller;
 
 import hbs.hotel_booking_servise.AbstractTest;
-import hbs.hotel_booking_servise.dto.BookingDto;
-import hbs.hotel_booking_servise.dto.HotelDto;
-import hbs.hotel_booking_servise.dto.RoomDto;
 
+
+import hbs.hotel_booking_servise.dto.BookingDtoRequest;
+import hbs.hotel_booking_servise.dto.HotelDtoRequest;
+import hbs.hotel_booking_servise.dto.RoomDtoRequest;
 import hbs.hotel_booking_servise.specification.RoomFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +42,7 @@ class RoomControllerTest extends AbstractTest {
         date10 = LocalDate.of(2023, 1, 10);
         date15 = LocalDate.of(2023, 1, 15);
 
-        HotelDto.Request request = HotelDto.Request.builder()
+        HotelDtoRequest request = HotelDtoRequest.builder()
                 .name("Hotel1")
                 .city("Gopensk")
                 .address("adres12345")
@@ -51,7 +52,7 @@ class RoomControllerTest extends AbstractTest {
         hotelService.create(request);
 
 
-        hotelService.create(HotelDto.Request.builder()
+        hotelService.create(HotelDtoRequest.builder()
                 .name("Hotel2")
                 .city("Zagopensk")
                 .address("adres123456")
@@ -59,7 +60,7 @@ class RoomControllerTest extends AbstractTest {
                 .announce("announce2")
                 .build());
 
-        roomService.create(RoomDto.Request.builder()
+        roomService.create(RoomDtoRequest.builder()
                 .name("BigRoom")
                 .capacity(5)
                 .description("description")
@@ -70,7 +71,7 @@ class RoomControllerTest extends AbstractTest {
         );
 
 
-        roomService.create(RoomDto.Request.builder()
+        roomService.create(RoomDtoRequest.builder()
                 .name("SmallRoom")
                 .capacity(2)
                 .description("description")
@@ -80,7 +81,7 @@ class RoomControllerTest extends AbstractTest {
                 .build()
         );
 
-        roomService.create(RoomDto.Request.builder()
+        roomService.create(RoomDtoRequest.builder()
                 .name("SmallRoom")
                 .capacity(2)
                 .description("description")
@@ -89,7 +90,7 @@ class RoomControllerTest extends AbstractTest {
                 .number("2-99")
                 .build()
         );
-        roomService.create(RoomDto.Request.builder()
+        roomService.create(RoomDtoRequest.builder()
                 .name("BigRoom")
                 .capacity(8)
                 .description("description")
@@ -101,14 +102,14 @@ class RoomControllerTest extends AbstractTest {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                 .withZone(ZoneId.systemDefault());
 
-        bookingService.create(BookingDto.Request.builder()
+        bookingService.create(BookingDtoRequest.builder()
                 .roomId(1L)
                 .checkIn(date5)
                 .checkOut(date15)
                 .build());
 
 
-        bookingService.create(BookingDto.Request.builder()
+        bookingService.create(BookingDtoRequest.builder()
                 .roomId(2L)
                 .checkIn(date1)
                 .checkOut(date10)

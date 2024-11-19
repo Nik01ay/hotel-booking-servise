@@ -1,26 +1,27 @@
 package hbs.hotel_booking_servise.domain.service;
 
 import hbs.hotel_booking_servise.domain.entity.Hotel;
-import hbs.hotel_booking_servise.domain.entity.User;
+
 import hbs.hotel_booking_servise.domain.repository.HotelRepo;
-import hbs.hotel_booking_servise.domain.repository.UserRepo;
-import hbs.hotel_booking_servise.dto.HotelDto;
-import hbs.hotel_booking_servise.dto.UserDto;
+
+
+import hbs.hotel_booking_servise.dto.HotelDtoListResponseCount;
+import hbs.hotel_booking_servise.dto.HotelDtoRatingRequest;
+import hbs.hotel_booking_servise.dto.HotelDtoRequest;
+import hbs.hotel_booking_servise.dto.HotelDtoResponse;
 import hbs.hotel_booking_servise.error.EntityNotFoundEx;
 import hbs.hotel_booking_servise.mapper.HotelMapper;
-import hbs.hotel_booking_servise.mapper.UserMapper;
+
 import hbs.hotel_booking_servise.specification.HotelFilter;
 import hbs.hotel_booking_servise.specification.HotelSpecification;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Component;
+
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.List;
 
 
 @Slf4j
@@ -34,7 +35,7 @@ public class HotelService {
     private final HotelMapper mapper;
 
 
-    public HotelDto.ListResponseCount filterBy(HotelFilter filter) {
+    public HotelDtoListResponseCount filterBy(HotelFilter filter) {
         log.debug("filterBy() method is called");
 
         return mapper.entityListToListResponseCount(
@@ -45,26 +46,26 @@ public class HotelService {
     }
 
 
-    public HotelDto.ListResponseCount findAll() {
+    public HotelDtoListResponseCount findAll() {
         log.debug("findAll() method is called " + this.getClass() + "имя класса");
 
         return mapper.entityListToListResponseCount(repository.findAll(), repository.count());
     }
 
 
-    public HotelDto.Response findById(Long id) {
+    public HotelDtoResponse findById(Long id) {
         log.debug("findById() method is called with id={}", id);
 
         return mapper.entityToResponse(repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundEx("нет запрашиваемого объекта с ID " + id)));
     }
 
-    public HotelDto.Response create(HotelDto.Request request) {
+    public HotelDtoResponse create(HotelDtoRequest request) {
         log.debug("create() method is called");
         return mapper.entityToResponse(repository.save(mapper.requestToEntity(request)));
     }
 
-    public HotelDto.Response update(Long id, HotelDto.Request object) {
+    public HotelDtoResponse update(Long id, HotelDtoRequest object) {
         log.debug("update() method is called");
 
 
@@ -99,19 +100,19 @@ public class HotelService {
     }
 
 
-    public HotelDto.Response updateRating(Long id, HotelDto.RatingRequest request) throws EntityNotFoundEx {
+    public HotelDtoResponse updateRating(Long id, HotelDtoRatingRequest request) throws EntityNotFoundEx {
 
         Hotel hotel = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundEx("нет запрашиваемого объекта с ID " + id));
 
-        HotelDto.Response h = calculateRating(hotel, request.getNewRating());
+        HotelDtoResponse h = calculateRating(hotel, request.getNewRating());
         hotel.setVotes(h.getVotes());
         hotel.setRating(h.getRating());
         repository.save(hotel);
         return findById(id);
     }
 
-    private HotelDto.Response calculateRating(Hotel hotel, Float newRatign) {
+    private HotelDtoResponse calculateRating(Hotel hotel, Float newRatign) {
 
         Float rating = hotel.getRating();
         Integer votes = hotel.getVotes();
@@ -131,7 +132,7 @@ public class HotelService {
 
         }
 
-        HotelDto.Response h = new HotelDto.Response();
+        HotelDtoResponse h = new HotelDtoResponse();
         h.setVotes(votes);
         h.setRating(rating);
         return h;

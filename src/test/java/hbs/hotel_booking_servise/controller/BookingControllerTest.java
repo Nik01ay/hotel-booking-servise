@@ -2,37 +2,32 @@ package hbs.hotel_booking_servise.controller;
 
 
 import hbs.hotel_booking_servise.AbstractTest;
-import hbs.hotel_booking_servise.dto.BookingDto;
-import hbs.hotel_booking_servise.dto.HotelDto;
-import hbs.hotel_booking_servise.dto.RoomDto;
+
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+//import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
+import hbs.hotel_booking_servise.dto.BookingDtoRequest;
+import hbs.hotel_booking_servise.dto.HotelDtoRequest;
+import hbs.hotel_booking_servise.dto.RoomDtoRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import org.springframework.security.test.context.support.WithMockUser;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.SerializationFeature;
 
-import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.testcontainers.shaded.com.fasterxml.jackson.databind.SerializationFeature.*;
+
 
 
 class BookingControllerTest extends AbstractTest {
@@ -52,7 +47,7 @@ class BookingControllerTest extends AbstractTest {
         date10 = LocalDate.of(2023, 1, 10);
         date15 = LocalDate.of(2023, 1, 15);
 
-        HotelDto.Request request = HotelDto.Request.builder()
+        HotelDtoRequest request = HotelDtoRequest.builder()
                 .name("Hotel1")
                 .city("Gopensk")
                 .address("adres12345")
@@ -62,7 +57,7 @@ class BookingControllerTest extends AbstractTest {
         hotelService.create(request);
 
 
-        hotelService.create(HotelDto.Request.builder()
+        hotelService.create(HotelDtoRequest.builder()
                 .name("Hotel2")
                 .city("Zagopensk")
                 .address("adres123456")
@@ -70,7 +65,7 @@ class BookingControllerTest extends AbstractTest {
                 .announce("announce2")
                 .build());
 
-        roomService.create(RoomDto.Request.builder()
+        roomService.create(RoomDtoRequest.builder()
                 .name("BigRoom")
                 .capacity(5)
                 .description("description")
@@ -81,7 +76,7 @@ class BookingControllerTest extends AbstractTest {
         );
 
 
-        roomService.create(RoomDto.Request.builder()
+        roomService.create(RoomDtoRequest.builder()
                 .name("SmallRoom")
                 .capacity(2)
                 .description("description")
@@ -91,7 +86,7 @@ class BookingControllerTest extends AbstractTest {
                 .build()
         );
 
-        roomService.create(RoomDto.Request.builder()
+        roomService.create(RoomDtoRequest.builder()
                 .name("SmallRoom")
                 .capacity(2)
                 .description("description")
@@ -100,7 +95,7 @@ class BookingControllerTest extends AbstractTest {
                 .number("2-99")
                 .build()
         );
-        roomService.create(RoomDto.Request.builder()
+        roomService.create(RoomDtoRequest.builder()
                 .name("BigRoom")
                 .capacity(8)
                 .description("description")
@@ -111,14 +106,14 @@ class BookingControllerTest extends AbstractTest {
         );
 
 
-        bookingService.create(BookingDto.Request.builder()
+        bookingService.create(BookingDtoRequest.builder()
                 .roomId(1L)
                 .checkIn(date5)
                 .checkOut(date15)
                 .build());
 
 
-        bookingService.create(BookingDto.Request.builder()
+        bookingService.create(BookingDtoRequest.builder()
                 .roomId(2L)
                 .checkIn(date1)
                 .checkOut(date10)
@@ -144,20 +139,11 @@ class BookingControllerTest extends AbstractTest {
     void createFreeRoomBookingTest() throws Exception {
         System.out.println(" - createFreeRoomBookingTest - ");
 
-        BookingDto.Request bookingRequest = BookingDto.Request.builder()
+        BookingDtoRequest bookingRequest = BookingDtoRequest.builder()
                 .roomId(4L)
                 .checkIn(date1)
                 .checkOut(date5)
                 .build();
-        //ObjectMapper objectMapper = new ObjectMapper();
-
-        //objectMapper.registerModule( new ParameterNamesModule());
-        // todo не могу внедрить JavaTimeModule
-        //objectMapper.disable(WRITE_DATES_AS_TIMESTAMPS);
-
-
-        // objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
-
 
         String content = "{\"roomId\":" + bookingRequest.getRoomId()
                 + ",\"checkIn\":\"" + bookingRequest.getCheckIn()
@@ -180,7 +166,7 @@ class BookingControllerTest extends AbstractTest {
     @WithMockUser(username = "user", authorities =  {"USER"})
     void createUsedRoomBookingTest() throws Exception {
         System.out.println(" - createFreeRoomBookingTest - ");
-        BookingDto.Request bookingRequest = BookingDto.Request.builder()
+        BookingDtoRequest bookingRequest = BookingDtoRequest.builder()
                 .roomId(1L)
                 .checkIn(date1)
                 .checkOut(date10)

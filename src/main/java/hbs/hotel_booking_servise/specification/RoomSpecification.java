@@ -3,19 +3,11 @@ package hbs.hotel_booking_servise.specification;
 import hbs.hotel_booking_servise.domain.entity.Booking;
 import hbs.hotel_booking_servise.domain.entity.Room;
 
-import jakarta.persistence.Persistence;
+
 import jakarta.persistence.criteria.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.EntityManager;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import javax.management.Attribute;
-import javax.persistence.metamodel.ManagedType;
 import java.time.*;
 import java.util.List;
 import java.util.Set;

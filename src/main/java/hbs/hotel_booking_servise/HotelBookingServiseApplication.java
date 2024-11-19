@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "hotel_booking_servise")
 public class HotelBookingServiseApplication {
 
 	public static void main(String[] args) {

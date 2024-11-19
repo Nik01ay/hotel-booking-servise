@@ -1,6 +1,7 @@
 package hbs.hotel_booking_servise.statistics;
 
-import hbs.hotel_booking_servise.dto.BookingDto;
+
+import hbs.hotel_booking_servise.dto.BookingDtoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class KafkaProducer {
         kafkaMessageManager.sendUser(userTopicName, user);
     }
 
-    public void sendToKafkaBookingEvent(BookingDto.Response booking){
+    public void sendToKafkaBookingEvent(BookingDtoResponse booking){
         EventDataNewBooking eventBooking = new EventDataNewBooking();
 
         eventBooking.setUserId(booking.getUserId());

@@ -2,8 +2,8 @@ package hbs.hotel_booking_servise.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 import hbs.hotel_booking_servise.AbstractTest;
-import hbs.hotel_booking_servise.dto.HotelDto;
-import hbs.hotel_booking_servise.dto.UserDto;
+
+import hbs.hotel_booking_servise.dto.HotelDtoRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ class HotelControllerTest extends AbstractTest {
     @BeforeEach
     public void setup (){
 
-        HotelDto.Request request =HotelDto.Request.builder()
+        HotelDtoRequest request =HotelDtoRequest.builder()
                 .name("Hotel1")
                 .city("Gopensk")
                 .address("adres12345")
@@ -27,7 +27,7 @@ class HotelControllerTest extends AbstractTest {
                 .build();
         hotelService.create(request);
 
-        HotelDto.Request request2 =HotelDto.Request.builder()
+        HotelDtoRequest request2 =HotelDtoRequest.builder()
                 .name("Hotel2")
                 .city("Gopensk")
                 .address("33adres12345")
@@ -38,7 +38,7 @@ class HotelControllerTest extends AbstractTest {
 
 
 
-        hotelService.create(HotelDto.Request.builder()
+        hotelService.create(HotelDtoRequest.builder()
                 .name("Hotel3")
                 .city("Zagopensk")
                 .address("adres123456")

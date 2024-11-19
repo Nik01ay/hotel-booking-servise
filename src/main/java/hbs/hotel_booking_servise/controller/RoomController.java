@@ -1,18 +1,19 @@
 package hbs.hotel_booking_servise.controller;
 
-import hbs.hotel_booking_servise.domain.service.HotelService;
 import hbs.hotel_booking_servise.domain.service.RoomService;
-import hbs.hotel_booking_servise.dto.HotelDto;
-import hbs.hotel_booking_servise.dto.RoomDto;
 
-import hbs.hotel_booking_servise.specification.HotelFilter;
+
+import hbs.hotel_booking_servise.dto.RoomDtoListResponseCount;
+import hbs.hotel_booking_servise.dto.RoomDtoRequest;
+import hbs.hotel_booking_servise.dto.RoomDtoResponse;
+
 import hbs.hotel_booking_servise.specification.RoomFilter;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,29 +25,29 @@ public class RoomController {
     private final RoomService service;
 
     @GetMapping("/filter")
-    public RoomDto.ListResponseCount filterBy(RoomFilter filter) {
+    public RoomDtoListResponseCount filterBy(RoomFilter filter) {
         System.out.println("ROOM FILTER GET");
         return service.filterBy(filter);
     }
 
     @GetMapping
-    public RoomDto.ListResponseCount getAll() {
+    public RoomDtoListResponseCount getAll() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public RoomDto.Response findById(@PathVariable Long id) {
+    public RoomDtoResponse findById(@PathVariable Long id) {
         return service.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RoomDto.Response create(@RequestBody RoomDto.Request request) {
+    public RoomDtoResponse create(@RequestBody RoomDtoRequest request) {
         return service.create(request);
     }
 
     @PutMapping("/{id}")
-    public RoomDto.Response update(@PathVariable Long id, @RequestBody RoomDto.Request request) {
+    public RoomDtoResponse update(@PathVariable Long id, @RequestBody RoomDtoRequest request) {
         return service.update(id, request);
     }
 

@@ -3,7 +3,8 @@ package hbs.hotel_booking_servise.domain.service;
 import hbs.hotel_booking_servise.domain.entity.User;
 
 import hbs.hotel_booking_servise.domain.entity.UserRole;
-import hbs.hotel_booking_servise.dto.UserDto;
+import hbs.hotel_booking_servise.dto.UserDtoRequest;
+import hbs.hotel_booking_servise.dto.UserDtoResponse;
 import hbs.hotel_booking_servise.error.EntityNotFoundEx;
 import hbs.hotel_booking_servise.error.IncorrectRequestEx;
 import hbs.hotel_booking_servise.mapper.UserMapper;
@@ -38,21 +39,21 @@ public class UserService {
 @Autowired
     private final PasswordEncoder passwordEncoder;
 
-    public List<UserDto.Response> findAll() {
+    public List<UserDtoResponse> findAll() {
         log.debug("findAll() method is called " + repository.getClass() + "имя класса");
         System.out.println("Vizov findAll() method is called " + repository.getClass() + "имя класса");
         return mapper.entityListToListResponse(repository.findAll());
     }
 
 
-    public UserDto.Response findById(Long id) {
+    public UserDtoResponse findById(Long id) {
         log.debug("findById() method is called with id={}", id);
 
         return mapper.entityToResponse(repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundEx("нет запрашиваемого объекта с ID " + id)));
     }
 
-    public UserDto.Response create(UserDto.Request request) {
+    public UserDtoResponse create(UserDtoRequest request) {
         log.debug("create() method is called");
 
 
@@ -66,7 +67,7 @@ public class UserService {
           if (request.getRole() == null || request.getRole().isEmpty()) {
               user.setRole(UserRole.USER);
           }
-            UserDto.Response userResponse = mapper.entityToResponse
+            UserDtoResponse userResponse = mapper.entityToResponse
                     (repository.save
                             (user));
 
@@ -78,7 +79,7 @@ public class UserService {
 
     }
 
-    public UserDto.Response update(Long id, UserDto.Request object) {
+    public UserDtoResponse update(Long id, UserDtoRequest object) {
         log.debug("update() method is called");
 
         User user = mapper.requestToEntity(object);

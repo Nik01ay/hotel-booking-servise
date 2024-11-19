@@ -1,7 +1,8 @@
 package hbs.hotel_booking_servise.controller;
 
 import hbs.hotel_booking_servise.AbstractTest;
-import hbs.hotel_booking_servise.dto.UserDto;
+
+import hbs.hotel_booking_servise.dto.UserDtoRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,9 @@ import static org.hamcrest.Matchers.*;
 
 class UserControllerTest extends AbstractTest {
     @BeforeEach
-    public void setup (){
+    public void setup() {
         System.out.println("Start Before test");
-        UserDto.Request request =UserDto.Request.builder()
+        UserDtoRequest request = UserDtoRequest.builder()
                 .name("User1")
                 .email("email1@sda.ru")
                 .password("12345")
@@ -27,7 +28,7 @@ class UserControllerTest extends AbstractTest {
         System.out.println("User1 CREATED");
         System.out.println(request);
 
-        userService.create(UserDto.Request.builder()
+        userService.create(UserDtoRequest.builder()
                 .name("User2")
                 .email("email2@sda.ru")
                 .password("12345")
@@ -35,23 +36,25 @@ class UserControllerTest extends AbstractTest {
         System.out.println("User2 CREATED");
 
     }
+
     @AfterEach
-    public void afterEach(){
+    public void afterEach() {
         userService.deleteAll();
     }
 
     @Test
 
-    public void createUniqueUser() throws Exception{
-    UserDto.Request   user = UserDto.Request.builder()
+    public void createUniqueUser() throws Exception {
+        UserDtoRequest user = UserDtoRequest.builder()
                 .password("12345")
                 .email("maile@mail.ru")
                 .name("Ivan")
+                .password("12345")
                 .build();
         ObjectMapper objectMapper = new ObjectMapper();
-       String content = objectMapper.writeValueAsString(user);
-       System.out.println("CONTENT USER: ");
-       System.out.println(content);
+        String content = objectMapper.writeValueAsString(user);
+        System.out.println("CONTENT USER: ");
+        System.out.println(content);
 
         mockMvc.perform(post("/api/v1/user")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -63,9 +66,10 @@ class UserControllerTest extends AbstractTest {
 
 
     }
+
     @Test
-    public void createNoUniqueUser() throws Exception{
-        UserDto.Request   user = UserDto.Request.builder()
+    public void createNoUniqueUser() throws Exception {
+        UserDtoRequest user = UserDtoRequest.builder()
                 .password("12345")
                 .email("maile@mail.ru")
                 .name("User2")
@@ -81,15 +85,14 @@ class UserControllerTest extends AbstractTest {
                 .andExpect(status().isBadRequest());
 
 
-
     }
 
     @Test
-    @WithMockUser(username = "user", authorities =  {"ADMIN"})
-    public void getAllTest() throws Exception{
+    @WithMockUser(username = "user", authorities = {"ADMIN"})
+    public void getAllTest() throws Exception {
         System.out.println("Start Get All test");
         mockMvc.perform(get("/api/v1/user")).andExpect(
-                status().isOk())
+                        status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$", hasSize(2))) // Проверяем, что размер массива равен 2
                 .andExpect(jsonPath("$[0].id", is(1))) // Проверяем параметры первого объекта

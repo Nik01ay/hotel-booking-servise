@@ -1,9 +1,11 @@
 package hbs.hotel_booking_servise.controller;
 
 import hbs.hotel_booking_servise.domain.service.UserService;
-import hbs.hotel_booking_servise.dto.UserDto;
 
 
+
+import hbs.hotel_booking_servise.dto.UserDtoRequest;
+import hbs.hotel_booking_servise.dto.UserDtoResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,23 +23,23 @@ public class UserController {
     private UserService service;
 
     @GetMapping
-    public List<UserDto.Response> getAll() {
+    public List<UserDtoResponse> getAll() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public UserDto.Response findById(@PathVariable Long id) {
+    public UserDtoResponse findById(@PathVariable Long id) {
         return service.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto.Response create(@RequestBody UserDto.Request request) {
+    public UserDtoResponse create(@RequestBody UserDtoRequest request) {
         return service.create(request);
     }
 
     @PutMapping("/{id}")
-    public UserDto.Response update(@PathVariable Long id, @RequestBody UserDto.Request request) {
+    public UserDtoResponse update(@PathVariable Long id, @RequestBody UserDtoRequest request) {
         return service.update(id, request);
     }
 
