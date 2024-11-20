@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 
-@Component
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
 

@@ -60,7 +60,7 @@ class UserControllerTest extends AbstractTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name", is("Ivana")))
+                .andExpect(jsonPath("$.name", is("Ivan")))
                 .andExpect(jsonPath("$.password", is("12345")))
                 .andExpect(jsonPath("$.email", is("maile@mail.ru")));
 
