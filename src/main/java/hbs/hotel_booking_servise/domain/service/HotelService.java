@@ -21,17 +21,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class HotelService {
-    @Autowired
+
     private final HotelRepo repository;
 
-    @Autowired
+
     private final HotelMapper mapper;
 
 
@@ -48,8 +50,10 @@ public class HotelService {
 
     public HotelDtoListResponseCount findAll() {
         log.debug("findAll() method is called " + this.getClass() + "имя класса");
-
+      List<Hotel> h =  repository.findAll();
+       int a =  h.size();
         return mapper.entityListToListResponseCount(repository.findAll(), repository.count());
+
     }
 
 
@@ -97,6 +101,13 @@ public class HotelService {
         log.debug("deleteAll method is called");
 
         repository.deleteAll();
+
+    }
+    @Transactional
+    public void deleteAllAndResetId() {
+        //repository.deleteAll();
+        repository.resetIdCounter();
+        repository.truncateTable();
     }
 
 

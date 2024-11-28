@@ -1,6 +1,7 @@
 package hbs.hotel_booking_servise.domain.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
@@ -11,6 +12,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Hotel {
  @Id
  @GeneratedValue(strategy = GenerationType.IDENTITY)

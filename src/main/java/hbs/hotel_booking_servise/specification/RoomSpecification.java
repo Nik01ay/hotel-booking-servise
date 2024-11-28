@@ -106,7 +106,7 @@ public interface RoomSpecification {
                 return null;
             }
             // номера с вместимостью больше чем в фильтре
-            return cb.greaterThan(root.get("capacity"), capacity);
+            return cb.greaterThanOrEqualTo(root.get("capacity"), capacity);
         });
     }
 

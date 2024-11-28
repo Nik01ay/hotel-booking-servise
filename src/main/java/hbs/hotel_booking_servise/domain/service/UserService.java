@@ -36,7 +36,7 @@ public class UserService {
 
     @Autowired
     private final KafkaProducer kafkaProducer;
-@Autowired
+    @Autowired
     private final PasswordEncoder passwordEncoder;
 
     public List<UserDtoResponse> findAll() {

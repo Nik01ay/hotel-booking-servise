@@ -16,11 +16,12 @@ import java.util.List;
 
 
 
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface HotelMapper {
 
 
- // @Mapping(source = "id", target = "id")
+ //@Mapping(source = "id", target = "id")
     Hotel requestToEntity(HotelDtoRequest request);
 
 
@@ -29,6 +30,7 @@ public interface HotelMapper {
     HotelDtoResponse entityToResponse(Hotel entity);
 
     List<HotelDtoResponse> entityListToListResponse(List<Hotel> entitys);
+
 
    default HotelDtoListResponseCount entityListToListResponseCount(List<Hotel> entitys, Long count) {
         return new HotelDtoListResponseCount(entityListToListResponse(entitys), count);

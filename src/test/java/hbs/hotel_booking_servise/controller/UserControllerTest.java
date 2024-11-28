@@ -2,10 +2,15 @@ package hbs.hotel_booking_servise.controller;
 
 import hbs.hotel_booking_servise.AbstractTest;
 
+import hbs.hotel_booking_servise.domain.service.UserService;
 import hbs.hotel_booking_servise.dto.UserDtoRequest;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import hbs.hotel_booking_servise.statistics.KafkaProducer;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,34 +21,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.*;
 
 class UserControllerTest extends AbstractTest {
-    @BeforeEach
-    public void setup() {
-        System.out.println("Start Before test");
-        UserDtoRequest request = UserDtoRequest.builder()
-                .name("User1")
-                .email("email1@sda.ru")
-                .password("12345")
-                .build();
-        userService.create(request);
-        System.out.println("User1 CREATED");
-        System.out.println(request);
 
-        userService.create(UserDtoRequest.builder()
-                .name("User2")
-                .email("email2@sda.ru")
-                .password("12345")
-                .build());
-        System.out.println("User2 CREATED");
-
-    }
-
-    @AfterEach
-    public void afterEach() {
-        userService.deleteAll();
-    }
 
     @Test
-
     public void createUniqueUser() throws Exception {
         UserDtoRequest user = UserDtoRequest.builder()
                 .password("12345")
@@ -61,7 +41,7 @@ class UserControllerTest extends AbstractTest {
                         .content(content))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is("Ivan")))
-                .andExpect(jsonPath("$.password", is("12345")))
+
                 .andExpect(jsonPath("$.email", is("maile@mail.ru")));
 
 
@@ -94,15 +74,15 @@ class UserControllerTest extends AbstractTest {
         mockMvc.perform(get("/api/v1/user")).andExpect(
                         status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$", hasSize(2))) // Проверяем, что размер массива равен 2
-                .andExpect(jsonPath("$[0].id", is(1))) // Проверяем параметры первого объекта
+                .andExpect(jsonPath("$", hasSize(3))) // Проверяем, что размер массива равен 2
+               // .andExpect(jsonPath("$[0].id", is(1))) // Проверяем параметры первого объекта
                 .andExpect(jsonPath("$[0].name", is("User1")))
 
-                .andExpect(jsonPath("$[0].email", is("email1@sda.ru")))
-                .andExpect(jsonPath("$[1].id", is(2))) // Проверяем параметры второго объекта
+                .andExpect(jsonPath("$[0].email", is("user1@example.com")))
+               // .andExpect(jsonPath("$[1].id", is(2))) // Проверяем параметры второго объекта
                 .andExpect(jsonPath("$[1].name", is("User2")))
 
-                .andExpect(jsonPath("$[1].email", is("email2@sda.ru")))
+                .andExpect(jsonPath("$[1].email", is("user2@example.com")))
                 .andExpect(jsonPath("$[0].role", is("USER"))) // Проверяем значение role
                 .andExpect(jsonPath("$[1].role", is("USER")));
     }

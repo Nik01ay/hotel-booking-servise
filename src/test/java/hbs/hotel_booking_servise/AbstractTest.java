@@ -1,19 +1,38 @@
 package hbs.hotel_booking_servise;
 
+import hbs.hotel_booking_servise.domain.repository.BookingRepo;
+import hbs.hotel_booking_servise.domain.repository.HotelRepo;
+import hbs.hotel_booking_servise.domain.repository.RoomRepo;
+import hbs.hotel_booking_servise.domain.repository.UserRepo;
 import hbs.hotel_booking_servise.domain.service.BookingService;
 import hbs.hotel_booking_servise.domain.service.HotelService;
 import hbs.hotel_booking_servise.domain.service.RoomService;
 import hbs.hotel_booking_servise.domain.service.UserService;
 
+import hbs.hotel_booking_servise.mapper.HotelMapper;
+import hbs.hotel_booking_servise.mapper.HotelMapperImpl;
+import hbs.hotel_booking_servise.statistics.KafkaMListener;
+import hbs.hotel_booking_servise.statistics.KafkaProducer;
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.event.annotation.AfterTestExecution;
+import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,32 +52,25 @@ import java.time.format.DateTimeFormatter;
 @Transactional
 @ActiveProfiles("test")
 @Testcontainers
-@EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092" })
+@DirtiesContext
+//@EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092" })
 public class AbstractTest {
-    protected  static PostgreSQLContainer postgreSQLContainer;
 
-    @Container
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:7.0").withExposedPorts(27017);
+    @MockBean
+    private KafkaProducer kafkaProducer;
 
+    @MockBean
+    private KafkaMListener kafkaMListener;
 
-    @DynamicPropertySource
-    static void containersProperties(DynamicPropertyRegistry registry) {
-        mongoDBContainer.start();
-        registry.add("spring.data.mongodb.host", mongoDBContainer::getHost);
-        registry.add("spring.data.mongodb.port", mongoDBContainer::getFirstMappedPort);
-    }
+    @InjectMocks
+    private UserService userService;
 
+    protected static   PostgreSQLContainer postgreSQLContainer;
+    @Autowired
+    private WebApplicationContext webApplicationContext;
 
-    static {
-        DockerImageName postgres = DockerImageName.parse("postgres:12.3");
-
-        postgreSQLContainer = (PostgreSQLContainer) new PostgreSQLContainer(postgres)
-                .withReuse(true);
-        postgreSQLContainer.start();
-
-
-
-    }
+    @Autowired
+    protected  MockMvc mockMvc;
 
 
     @DynamicPropertySource
@@ -70,26 +82,21 @@ public class AbstractTest {
         registry.add("spring.datasource.url",()->jdbcUrl);
 
     }
-
-    @Autowired
-    protected WebApplicationContext webApplicationContext;
-
-    @Autowired
-    protected MockMvc mockMvc;
-
-    @Autowired
-    protected UserService userService;
+    @BeforeAll
+    static void startContainer(){
+        DockerImageName postgres = DockerImageName.parse("postgres:12.3");
 
 
-    @Autowired
-    protected HotelService hotelService;
 
-    @Autowired
-    protected RoomService roomService;
-
-    @Autowired
-    protected BookingService bookingService;
+        postgreSQLContainer = new PostgreSQLContainer<>(postgres)
+                .withInitScript("initTest.sql"); // Загрузка скрипта инициализации
+        postgreSQLContainer.start();
+    }
 
 
+    @AfterAll
+    static void stopContainer(){
+        postgreSQLContainer.stop();
+    }
 
 }
